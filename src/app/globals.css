@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f2efe8;
+  --bg-soft: #ece8df;
+  --card: #fffdf8;
+  --text: #1d1c1a;
+  --text-soft: #5d5a53;
+  --line: #d6d0c4;
+  --accent: #006d5b;
+  --accent-2: #0f3d55;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1418;
+  --bg-soft: #151d22;
+  --card: #1a2329;
+  --text: #eef2f0;
+  --text-soft: #9fb0ab;
+  --line: #27353f;
+  --accent: #38c7a7;
+  --accent-2: #57b5e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 40%),
+    radial-gradient(circle at 90% 5%, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 35%),
+    linear-gradient(180deg, var(--bg), var(--bg-soft));
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.network-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.network-bg::before,
+.network-bg::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+}
+
+.network-bg::before {
+  background-image:
+    radial-gradient(circle at center, color-mix(in srgb, var(--accent) 50%, transparent) 0 1px, transparent 1px),
+    linear-gradient(120deg, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 70%),
+    linear-gradient(35deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 65%);
+  background-size: 46px 46px, 100% 100%, 100% 100%;
+  opacity: 0.28;
+  animation: network-pan 32s linear infinite;
+}
+
+.network-bg::after {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 24%,
+      color-mix(in srgb, var(--line) 45%, transparent) 25%,
+      transparent 26%,
+      transparent 49%,
+      color-mix(in srgb, var(--line) 45%, transparent) 50%,
+      transparent 51%,
+      transparent 74%,
+      color-mix(in srgb, var(--line) 45%, transparent) 75%,
+      transparent 76%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 24%,
+      color-mix(in srgb, var(--line) 45%, transparent) 25%,
+      transparent 26%,
+      transparent 49%,
+      color-mix(in srgb, var(--line) 45%, transparent) 50%,
+      transparent 51%,
+      transparent 74%,
+      color-mix(in srgb, var(--line) 45%, transparent) 75%,
+      transparent 76%
+    );
+  background-size: 160px 160px;
+  opacity: 0.12;
+  transform: rotate(8deg) scale(1.1);
+  animation: network-drift 24s ease-in-out infinite alternate;
+}
+
+@keyframes network-pan {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-3%, -2%, 0);
+  }
+}
+
+@keyframes network-drift {
+  from {
+    transform: rotate(8deg) scale(1.08);
+  }
+  to {
+    transform: rotate(4deg) scale(1.14);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .network-bg::before,
+  .network-bg::after {
+    animation: none;
+  }
+}
+
+.tiptap {
+  min-height: calc(100vh - 230px);
+  outline: none;
+  line-height: 1.7;
+  padding: 1rem;
+}
+
+.tiptap p {
+  margin: 0.5rem 0;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.25rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap li::marker {
+  color: color-mix(in srgb, var(--text) 78%, var(--accent));
+}
+
+.tiptap pre {
+  background: color-mix(in srgb, var(--accent-2) 18%, var(--card));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.85rem;
+  overflow: auto;
+}
+
+.tiptap .collaboration-cursor__selection {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.tiptap .collaboration-cursor__caret {
+  border-left: 2px solid var(--accent);
+  border-right: 0;
+  margin-left: -1px;
+  margin-right: -1px;
+  pointer-events: none;
+  position: relative;
+}
+
+.tiptap .collaboration-cursor__label {
+  position: absolute;
+  top: -1.3rem;
+  left: -1px;
+  transform: translateY(-100%);
+  border-radius: 999px;
+  padding: 0.08rem 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: #ffffff;
+  background: var(--accent);
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}

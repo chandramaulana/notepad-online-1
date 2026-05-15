@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  contentJson String?  @db.Text
+  locked      Boolean  @default(false)
+  pinHash     String?
+  unlockFailures Int   @default(0)
+  unlockBlockedUntil DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RoomPresence {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  activeUsers Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

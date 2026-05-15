@@ -18,10 +18,23 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:7800"),
   title: "Aitonomous Notepad",
   description: "Realtime collaborative online notepad.",
+  alternates: {
+    canonical: "/"
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION
+  },
   openGraph: {
     title: "Aitonomous Notepad",
     description: "Realtime collaborative online notepad.",
-    type: "website"
+    type: "website",
+    url: "/",
+    siteName: "Aitonomous Notepad"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aitonomous Notepad",
+    description: "Realtime collaborative online notepad."
   }
 };
 

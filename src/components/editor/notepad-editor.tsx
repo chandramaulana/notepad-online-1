@@ -61,6 +61,11 @@ const copy = {
     invalidPin: "PIN harus 4-6 digit angka.",
     wrongPin: "PIN salah.",
     pinPrompt: "Masukkan PIN 4-6 digit",
+    pinModalTitle: "Atur PIN Notepad",
+    pinModalDesc: "Masukkan PIN 4-6 digit angka untuk mengunci notepad ini.",
+    pinModalPlaceholder: "PIN 4-6 digit",
+    cancel: "Batal",
+    savePin: "Simpan PIN",
     lockFailed: "Gagal mengunci note.",
     exportFailed: "Gagal export file.",
     room: "Ruang",
@@ -93,6 +98,11 @@ const copy = {
     invalidPin: "PIN must be 4-6 digits.",
     wrongPin: "Incorrect PIN.",
     pinPrompt: "Enter a 4-6 digit PIN",
+    pinModalTitle: "Set Notepad PIN",
+    pinModalDesc: "Enter a 4-6 digit PIN to lock this notepad.",
+    pinModalPlaceholder: "4-6 digit PIN",
+    cancel: "Cancel",
+    savePin: "Save PIN",
     lockFailed: "Failed to lock note.",
     exportFailed: "Failed to export file.",
     room: "Room",
@@ -180,6 +190,10 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   const [timeTick, setTimeTick] = useState(0);
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [unlockCooldownSeconds, setUnlockCooldownSeconds] = useState(0);
+  const [showLockModal, setShowLockModal] = useState(false);
+  const [lockPinInput, setLockPinInput] = useState("");
+  const [lockPinError, setLockPinError] = useState<string | null>(null);
+  const [lockSaving, setLockSaving] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const [ydoc] = useState(() => new Y.Doc());
 
@@ -424,45 +438,51 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
     setUnlockCooldownSeconds(0);
   }
 
-  async function lockNote() {
-    const pin = window.prompt(text.pinPrompt);
-    if (!pin) {
-      return;
-    }
+  async function applyLockPin(pin: string) {
+    setLockSaving(true);
 
-    const response = await fetch(`/api/notes/${slug}/lock`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(token
-          ? {
-              Authorization: `Bearer ${token}`
-            }
-          : {})
-      },
-      body: JSON.stringify({ pin })
-    });
-
-    if (!response.ok) {
-      showToast(text.lockFailed, "error");
-      return;
-    }
-
-    setLocked(true);
-    if (!token) {
-      const unlockResponse = await fetch(`/api/notes/${slug}/unlock`, {
+    try {
+      const response = await fetch(`/api/notes/${slug}/lock`, {
         method: "POST",
         headers: {
-          "content-type": "application/json"
+          "content-type": "application/json",
+          ...(token
+            ? {
+                Authorization: `Bearer ${token}`
+              }
+            : {})
         },
         body: JSON.stringify({ pin })
       });
 
-      if (unlockResponse.ok) {
-        const payload = (await unlockResponse.json()) as { token: string };
-        localStorage.setItem(`${STORAGE_PREFIX}${slug}`, payload.token);
-        setToken(payload.token);
+      if (!response.ok) {
+        showToast(text.lockFailed, "error");
+        setLockPinError(text.lockFailed);
+        return;
       }
+
+      setLocked(true);
+      setShowLockModal(false);
+      setLockPinInput("");
+      setLockPinError(null);
+
+      if (!token) {
+        const unlockResponse = await fetch(`/api/notes/${slug}/unlock`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({ pin })
+        });
+
+        if (unlockResponse.ok) {
+          const payload = (await unlockResponse.json()) as { token: string };
+          localStorage.setItem(`${STORAGE_PREFIX}${slug}`, payload.token);
+          setToken(payload.token);
+        }
+      }
+    } finally {
+      setLockSaving(false);
     }
   }
 
@@ -631,7 +651,12 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
             <FileCode className="mr-2 h-4 w-4" />
             {text.md}
           </Button>
-          <Button onClick={lockNote}>
+          <Button
+            onClick={() => {
+              setShowLockModal(true);
+              setLockPinError(null);
+            }}
+          >
             <Lock className="mr-2 h-4 w-4" />
             {locked ? text.changePin : text.lockNote}
           </Button>
@@ -648,6 +673,71 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
         >
           {toast.type === "success" ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
           {toast.message}
+        </div>
+      ) : null}
+
+      {showLockModal ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-2xl">
+            <h3 className="text-lg font-semibold">{text.pinModalTitle}</h3>
+            <p className="mt-1 text-sm text-[var(--text-soft)]">{text.pinModalDesc}</p>
+
+            <form
+              className="mt-4 space-y-3"
+              onSubmit={async (event) => {
+                event.preventDefault();
+                const pin = lockPinInput.trim();
+
+                if (!/^\d{4,6}$/.test(pin)) {
+                  setLockPinError(text.invalidPin);
+                  return;
+                }
+
+                await applyLockPin(pin);
+              }}
+            >
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                minLength={4}
+                value={lockPinInput}
+                onChange={(event) => {
+                  setLockPinInput(event.target.value);
+                  if (lockPinError) {
+                    setLockPinError(null);
+                  }
+                }}
+                placeholder={text.pinModalPlaceholder}
+                className="h-10 w-full rounded-xl border border-[var(--line)] bg-transparent px-3 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={lockSaving}
+              />
+
+              {lockPinError ? (
+                <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">{lockPinError}</p>
+              ) : null}
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={lockSaving}
+                  onClick={() => {
+                    setShowLockModal(false);
+                    setLockPinError(null);
+                    setLockPinInput("");
+                  }}
+                >
+                  {text.cancel}
+                </Button>
+                <Button type="submit" disabled={lockSaving}>
+                  <Lock className="mr-2 h-4 w-4" />
+                  {text.savePin}
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       ) : null}
 

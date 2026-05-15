@@ -7,15 +7,16 @@ import { verifyNoteToken } from "@/lib/auth";
 
 const port = Number(process.env.COLLAB_PORT || 1234);
 
-async function updateRoomPresence(slug: string, delta: number) {
+async function setRoomPresenceCount(slug: string, activeUsers: number) {
   const safeSlug = sanitizeSlug(slug);
+  const nextActiveUsers = Math.max(activeUsers, 0);
   const existing = await prisma.roomPresence.findUnique({ where: { slug: safeSlug } });
 
   if (!existing) {
     await prisma.roomPresence.create({
       data: {
         slug: safeSlug,
-        activeUsers: Math.max(delta, 0)
+        activeUsers: nextActiveUsers
       }
     });
     return;
@@ -24,7 +25,7 @@ async function updateRoomPresence(slug: string, delta: number) {
   await prisma.roomPresence.update({
     where: { slug: safeSlug },
     data: {
-      activeUsers: Math.max(existing.activeUsers + delta, 0)
+      activeUsers: nextActiveUsers
     }
   });
 }
@@ -32,10 +33,14 @@ async function updateRoomPresence(slug: string, delta: number) {
 const server = new Server({
   port,
   async onConnect({ documentName }) {
-    await updateRoomPresence(documentName, 1);
+    // Keep room row alive; realtime count is synced by awareness/disconnect hooks.
+    await setRoomPresenceCount(documentName, 0);
   },
-  async onDisconnect({ documentName }) {
-    await updateRoomPresence(documentName, -1);
+  async onAwarenessUpdate({ documentName, states }) {
+    await setRoomPresenceCount(documentName, states.length);
+  },
+  async onDisconnect({ documentName, clientsCount }) {
+    await setRoomPresenceCount(documentName, clientsCount);
   },
   async onAuthenticate({ documentName, token }) {
     const slug = sanitizeSlug(documentName);
@@ -82,6 +87,15 @@ const server = new Server({
       }
     });
   }
+});
+
+// Clear stale online counters from previous process before accepting connections.
+prisma.roomPresence.updateMany({
+  data: {
+    activeUsers: 0
+  }
+}).catch(() => {
+  // Ignore startup reset errors; counters will self-heal from awareness updates.
 });
 
 server.listen();

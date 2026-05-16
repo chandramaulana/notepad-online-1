@@ -38,6 +38,6 @@ export async function POST(
       return NextResponse.json({ message: "Too many requests" }, { status: 429 });
     }
 
-    return NextResponse.json({ message: "Failed to save note" }, { status: 400 });
+    return NextResponse.json({ message: "Failed to save note" }, { status: 500 });
   }
 }

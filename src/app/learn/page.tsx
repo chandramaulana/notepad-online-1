@@ -1,0 +1,57 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { getSeoEntries } from "@/lib/programmatic-seo";
+
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
+const entries = getSeoEntries("learn");
+
+export const metadata: Metadata = {
+  title: "Panduan Notepad Online | Chandra Notepad",
+  description:
+    "Panduan notepad online untuk kolaborasi realtime, keamanan dasar shared notes, dan strategi dokumentasi tim modern.",
+  alternates: {
+    canonical: `${appUrl}/learn`
+  },
+  keywords: [
+    "online notepad guide",
+    "realtime collaborative notes guide",
+    "programmatic seo notepad"
+  ],
+  openGraph: {
+    title: "Panduan Notepad Online",
+    description: "Pelajari cara menggunakan notepad online untuk workflow kolaboratif dan produktif.",
+    url: `${appUrl}/learn`,
+    type: "website"
+  }
+};
+
+export default function LearnHubPage() {
+  return (
+    <section className="mx-auto w-full max-w-5xl px-4 py-12">
+      <header className="mb-8">
+        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">SEO Learn Hub</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Panduan Notepad Online</h1>
+        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
+          Jelajahi artikel edukasi seputar online notepad, realtime collaboration, keamanan catatan bersama, dan strategi
+          konten SaaS.
+        </p>
+      </header>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {entries.map((entry) => (
+          <article
+            key={entry.slug}
+            className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-lg shadow-black/5"
+          >
+            <h2 className="text-xl font-semibold">
+              <Link href={`/learn/${entry.slug}`} className="hover:text-[var(--accent)]">
+                {entry.title}
+              </Link>
+            </h2>
+            <p className="mt-2 text-sm text-[var(--text-soft)]">{entry.excerpt}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}

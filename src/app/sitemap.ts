@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { BLOG_ENTRIES } from "@/app/blog/content";
+import { SEO_ENTRIES, SEO_HUBS } from "@/lib/programmatic-seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
@@ -27,6 +28,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8
   }));
 
+  const seoHubRoutes: MetadataRoute.Sitemap = SEO_HUBS.map((hub) => ({
+    url: `${appUrl}${hub.path}`,
+    lastModified: new Date(),
+    changeFrequency: hub.changeFrequency,
+    priority: hub.priority
+  }));
+
+  const seoEntryRoutes: MetadataRoute.Sitemap = Object.entries(SEO_ENTRIES).flatMap(([cluster, entries]) =>
+    entries.map((entry) => ({
+      url: `${appUrl}/${cluster}/${entry.slug}`,
+      lastModified: new Date(entry.updatedAt),
+      changeFrequency: "monthly" as const,
+      priority: cluster === "compare" ? 0.76 : 0.78
+    }))
+  );
+
   let latestNotes: Array<{ slug: string; updatedAt: Date }> = [];
 
   try {
@@ -41,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       take: 1000
     });
   } catch {
-    return [...staticRoutes, ...blogRoutes];
+    return [...staticRoutes, ...blogRoutes, ...seoHubRoutes, ...seoEntryRoutes];
   }
 
   const noteRoutes: MetadataRoute.Sitemap = latestNotes.map((note) => ({
@@ -51,5 +68,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }));
 
-  return [...staticRoutes, ...blogRoutes, ...noteRoutes];
+  return [...staticRoutes, ...blogRoutes, ...seoHubRoutes, ...seoEntryRoutes, ...noteRoutes];
 }

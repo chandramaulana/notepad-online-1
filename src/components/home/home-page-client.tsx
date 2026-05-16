@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { LandingForm } from "@/components/home/landing-form";
 import { useAppSettings } from "@/components/ui/use-app-settings";
 
@@ -22,6 +23,21 @@ const copy = {
       "Privasi dasar dengan lock PIN agar room penting tidak mudah diakses."
     ],
     faqTitle: "Pertanyaan Umum",
+    blogTitle: "Artikel Populer",
+    blogLinks: [
+      {
+        href: "/blog/how-it-works" as BlogHref,
+        label: "Cara Kerja Notepad Online Realtime"
+      },
+      {
+        href: "/blog/features" as BlogHref,
+        label: "Fitur Utama Notepad Online"
+      },
+      {
+        href: "/blog/privacy" as BlogHref,
+        label: "Privasi dan Keamanan Dasar"
+      }
+    ],
     faq: [
       {
         q: "Apakah bisa dipakai tanpa login?",
@@ -50,6 +66,21 @@ const copy = {
       "Basic privacy lock with PIN for sensitive collaboration rooms."
     ],
     faqTitle: "Frequently Asked Questions",
+    blogTitle: "Popular Articles",
+    blogLinks: [
+      {
+        href: "/blog/how-it-works" as BlogHref,
+        label: "How Realtime Online Notepad Works"
+      },
+      {
+        href: "/blog/features" as BlogHref,
+        label: "Top Features of Collaborative Notes"
+      },
+      {
+        href: "/blog/privacy" as BlogHref,
+        label: "Basic Privacy and Security"
+      }
+    ],
     faq: [
       {
         q: "Can I use it without creating an account?",
@@ -68,9 +99,28 @@ type StatsPayload = {
   roomsCreated: number;
 };
 
+type BlogHref = "/blog/how-it-works" | "/blog/features" | "/blog/privacy";
+
+type HomeCopy = {
+  badge: string;
+  title: string;
+  subtitle: string;
+  activeUsers: string;
+  roomsCreated: string;
+  sectionTitle: string;
+  sectionDescription: string;
+  points: string[];
+  faqTitle: string;
+  blogTitle: string;
+  blogLinks: Array<{ href: BlogHref; label: string }>;
+  faq: Array<{ q: string; a: string }>;
+};
+
+const typedCopy: Record<"id" | "en", HomeCopy> = copy;
+
 export function HomePageClient() {
   const { language } = useAppSettings();
-  const text = copy[language];
+  const text = typedCopy[language];
   const [stats, setStats] = useState<StatsPayload>({
     activeUsers: 0,
     roomsCreated: 0
@@ -133,6 +183,22 @@ export function HomePageClient() {
             {text.points.map((point) => (
               <li key={point} className="rounded-lg border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-2">
                 {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-8 border-t border-[var(--line)] pt-6">
+          <h2 className="text-xl font-semibold">{text.blogTitle}</h2>
+          <ul className="mt-3 space-y-2 text-sm md:text-base">
+            {text.blogLinks.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="inline-flex rounded-lg border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-2 text-[var(--text-soft)] transition-colors hover:text-[var(--accent)]"
+                >
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>

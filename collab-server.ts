@@ -12,6 +12,8 @@ const DEFAULT_COLLAB_FIELD = "tab-main";
 type StoredNoteContentV2 = {
   version: 2;
   fields: Record<string, unknown>;
+  tabOrder?: string[];
+  tabLabels?: Record<string, string>;
 };
 
 function parseStoredContent(contentJson: string | null): StoredNoteContentV2 | null {
@@ -31,9 +33,27 @@ function parseStoredContent(contentJson: string | null): StoredNoteContentV2 | n
       typeof (parsed as { fields?: unknown }).fields === "object" &&
       (parsed as { fields?: unknown }).fields !== null
     ) {
+      const parsedObject = parsed as {
+        fields: Record<string, unknown>;
+        tabOrder?: unknown;
+        tabLabels?: unknown;
+      };
+
       return {
         version: 2,
-        fields: { ...((parsed as { fields: Record<string, unknown> }).fields || {}) }
+        fields: { ...(parsedObject.fields || {}) },
+        tabOrder: Array.isArray(parsedObject.tabOrder)
+          ? parsedObject.tabOrder.filter((value): value is string => typeof value === "string")
+          : undefined,
+        tabLabels:
+          parsedObject.tabLabels && typeof parsedObject.tabLabels === "object"
+            ? Object.fromEntries(
+                Object.entries(parsedObject.tabLabels as Record<string, unknown>).filter(
+                  (entry): entry is [string, string] =>
+                    typeof entry[0] === "string" && typeof entry[1] === "string"
+                )
+              )
+            : undefined
       };
     }
 
@@ -167,6 +187,22 @@ const server = new Server({
       }
 
       if (loaded) {
+        if (stored.tabOrder?.length) {
+          const order = merged.getArray<string>("tab-order");
+          if (order.length === 0) {
+            order.push(stored.tabOrder);
+          }
+        }
+
+        if (stored.tabLabels && Object.keys(stored.tabLabels).length > 0) {
+          const labels = merged.getMap<string>("tab-labels");
+          if (labels.size === 0) {
+            for (const [tabId, label] of Object.entries(stored.tabLabels)) {
+              labels.set(tabId, label);
+            }
+          }
+        }
+
         return merged;
       }
     }
@@ -186,6 +222,10 @@ const server = new Server({
       }
     }
 
+    const tabOrder = document.getArray<string>("tab-order").toArray();
+    const tabLabelsEntries = Array.from(document.getMap<string>("tab-labels").entries());
+    const tabLabels = Object.fromEntries(tabLabelsEntries);
+
     if (Object.keys(fields).length === 0) {
       fields[DEFAULT_COLLAB_FIELD] = TiptapTransformer.fromYdoc(document, DEFAULT_COLLAB_FIELD);
     }
@@ -195,7 +235,9 @@ const server = new Server({
       data: {
         contentJson: JSON.stringify({
           version: 2,
-          fields
+          fields,
+          tabOrder,
+          tabLabels
         })
       }
     });

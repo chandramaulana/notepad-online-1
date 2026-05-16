@@ -4,7 +4,7 @@ import { sanitizeSlug } from "@/lib/slug";
 import { verifyNoteToken } from "@/lib/auth";
 import { getBearerToken, getClientIp } from "@/lib/request";
 import { assertRateLimit } from "@/lib/rate-limit";
-import { jsonToMarkdown, jsonToText } from "@/lib/content";
+import { jsonToMarkdown, jsonToTextByField } from "@/lib/content";
 
 export async function GET(
   request: NextRequest,
@@ -14,6 +14,7 @@ export async function GET(
     assertRateLimit(`note:export:${getClientIp(request)}`);
 
     const format = request.nextUrl.searchParams.get("format") || "txt";
+    const tab = request.nextUrl.searchParams.get("tab") || undefined;
     const { slug } = await context.params;
     const safeSlug = sanitizeSlug(slug);
     const note = await getOrCreateNote(safeSlug);
@@ -25,7 +26,7 @@ export async function GET(
       }
     }
 
-    const content = format === "md" ? jsonToMarkdown(note.contentJson) : jsonToText(note.contentJson);
+    const content = format === "md" ? jsonToMarkdown(note.contentJson, tab) : jsonToTextByField(note.contentJson, tab);
     const extension = format === "md" ? "md" : "txt";
 
     return new NextResponse(content, {

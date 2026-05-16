@@ -669,7 +669,8 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   }
 
   async function exportNote(format: "txt" | "md") {
-    const response = await fetch(`/api/notes/${slug}/export?format=${format}`, {
+    const params = new URLSearchParams({ format, tab: activeTabId });
+    const response = await fetch(`/api/notes/${slug}/export?${params.toString()}`, {
       headers: token
         ? {
             Authorization: `Bearer ${token}`
@@ -683,7 +684,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
     }
 
     const content = await response.text();
-    saveFile(`${slug}.${format}`, content);
+    saveFile(`${slug}-${activeTabId}.${format}`, content);
     showToast(format === "txt" ? text.exportTxtSuccess : text.exportMdSuccess, "success");
   }
 

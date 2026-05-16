@@ -12,6 +12,8 @@ const DEFAULT_COLLAB_FIELD = "tab-main";
 type StoredNoteContentV2 = {
   version: 2;
   fields: Record<string, unknown>;
+  tabOrder?: string[];
+  tabLabels?: Record<string, string>;
 };
 
 function parseStoredContent(contentJson: string | null): StoredNoteContentV2 | null {
@@ -31,9 +33,27 @@ function parseStoredContent(contentJson: string | null): StoredNoteContentV2 | n
       typeof (parsed as { fields?: unknown }).fields === "object" &&
       (parsed as { fields?: unknown }).fields !== null
     ) {
+      const parsedObject = parsed as {
+        fields: Record<string, unknown>;
+        tabOrder?: unknown;
+        tabLabels?: unknown;
+      };
+
       return {
         version: 2,
-        fields: { ...((parsed as { fields: Record<string, unknown> }).fields || {}) }
+        fields: { ...(parsedObject.fields || {}) },
+        tabOrder: Array.isArray(parsedObject.tabOrder)
+          ? parsedObject.tabOrder.filter((value): value is string => typeof value === "string")
+          : undefined,
+        tabLabels:
+          parsedObject.tabLabels && typeof parsedObject.tabLabels === "object"
+            ? Object.fromEntries(
+                Object.entries(parsedObject.tabLabels as Record<string, unknown>).filter(
+                  (entry): entry is [string, string] =>
+                    typeof entry[0] === "string" && typeof entry[1] === "string"
+                )
+              )
+            : undefined
       };
     }
 
@@ -80,7 +100,9 @@ export async function POST(
       fields: {
         ...(existing?.fields || {}),
         [activeField]: parsedIncoming
-      }
+      },
+      tabOrder: existing?.tabOrder,
+      tabLabels: existing?.tabLabels
     };
 
     const updated = await prisma.note.update({

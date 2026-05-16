@@ -11,7 +11,8 @@ export const lockSchema = z.object({
 });
 
 export const saveSchema = z.object({
-  contentJson: z.string().max(2_000_000)
+  contentJson: z.string().max(2_000_000),
+  activeTabId: z.string().min(1).max(120).optional()
 });
 
 export const unlockSchema = z.object({

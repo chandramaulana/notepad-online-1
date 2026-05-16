@@ -7,6 +7,47 @@ import { getBearerToken, getClientIp } from "@/lib/request";
 import { saveSchema } from "@/lib/validators";
 import { assertRateLimit } from "@/lib/rate-limit";
 
+const DEFAULT_COLLAB_FIELD = "tab-main";
+
+type StoredNoteContentV2 = {
+  version: 2;
+  fields: Record<string, unknown>;
+};
+
+function parseStoredContent(contentJson: string | null): StoredNoteContentV2 | null {
+  if (!contentJson) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(contentJson) as unknown;
+
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      "version" in parsed &&
+      (parsed as { version?: number }).version === 2 &&
+      "fields" in parsed &&
+      typeof (parsed as { fields?: unknown }).fields === "object" &&
+      (parsed as { fields?: unknown }).fields !== null
+    ) {
+      return {
+        version: 2,
+        fields: { ...((parsed as { fields: Record<string, unknown> }).fields || {}) }
+      };
+    }
+
+    return {
+      version: 2,
+      fields: {
+        [DEFAULT_COLLAB_FIELD]: parsed
+      }
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }
@@ -24,11 +65,28 @@ export async function POST(
     }
 
     const payload = saveSchema.parse(await request.json());
+    const activeField = payload.activeTabId || DEFAULT_COLLAB_FIELD;
+    const existing = parseStoredContent(note.contentJson);
+
+    let parsedIncoming: unknown;
+    try {
+      parsedIncoming = JSON.parse(payload.contentJson);
+    } catch {
+      return NextResponse.json({ message: "Invalid content payload" }, { status: 400 });
+    }
+
+    const nextContent: StoredNoteContentV2 = {
+      version: 2,
+      fields: {
+        ...(existing?.fields || {}),
+        [activeField]: parsedIncoming
+      }
+    };
 
     const updated = await prisma.note.update({
       where: { slug: note.slug },
       data: {
-        contentJson: payload.contentJson
+        contentJson: JSON.stringify(nextContent)
       }
     });
 

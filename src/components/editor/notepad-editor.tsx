@@ -561,7 +561,8 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
                 : {})
             },
             body: JSON.stringify({
-              contentJson: payload
+              contentJson: payload,
+              activeTabId
             })
           });
 

@@ -293,6 +293,15 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [ydoc] = useState(() => new Y.Doc());
 
+  const fallbackCollabUrl = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "ws://localhost:1234";
+    }
+
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    return `${protocol}//${window.location.host}`;
+  }, []);
+
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -397,7 +406,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
     }
 
     const nextProvider = new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLAB_WS_URL || "ws://localhost:1234",
+      url: process.env.NEXT_PUBLIC_COLLAB_WS_URL || fallbackCollabUrl,
       name: slug,
       document: ydoc,
       token: token || ""
@@ -433,7 +442,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
       nextProvider.destroy();
       setProvider(null);
     };
-  }, [loading, unauthorized, slug, token, ydoc]);
+  }, [fallbackCollabUrl, loading, unauthorized, slug, token, ydoc]);
 
   useEffect(() => {
     if (loading || unauthorized || !provider) {

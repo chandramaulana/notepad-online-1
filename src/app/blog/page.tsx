@@ -5,14 +5,14 @@ import { BLOG_ENTRIES } from "@/app/blog/content";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 
 export const metadata: Metadata = {
-  title: "Blog | Aitonomous Notepad",
+  title: "Blog | Chandra Notepad",
   description:
-    "Artikel resmi Aitonomous Notepad tentang fitur, privasi, cara kerja, dan kolaborasi realtime untuk mempercepat kerja tim.",
+    "Artikel resmi Chandra Notepad tentang fitur, privasi, cara kerja, dan kolaborasi realtime untuk mempercepat kerja tim.",
   alternates: {
     canonical: `${appUrl}/blog`
   },
   openGraph: {
-    title: "Blog Aitonomous Notepad",
+    title: "Blog Chandra Notepad",
     description:
       "Baca panduan dan insight seputar notepad online realtime, collaborative notes, dan best practice produktivitas tim.",
     url: `${appUrl}/blog`,
@@ -24,7 +24,7 @@ export default function BlogIndexPage() {
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-12">
       <header className="mb-8">
-        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Blog Aitonomous Notepad</h1>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Blog Chandra Notepad</h1>
         <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
           Kumpulan artikel untuk memahami notepad online realtime, cara kerja kolaborasi, fitur, dan praktik penggunaan yang aman.
         </p>

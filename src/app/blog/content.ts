@@ -16,18 +16,18 @@ export type BlogEntry = {
 export const BLOG_ENTRIES: BlogEntry[] = [
   {
     slug: "about",
-    title: "About Aitonomous Notepad",
+    title: "About Chandra Notepad",
     description:
-      "Pelajari tentang Aitonomous Notepad, visi produk, dan alasan kenapa notepad online realtime ini dibuat untuk kolaborasi cepat.",
+      "Pelajari tentang Chandra Notepad, visi produk, dan alasan kenapa notepad online realtime ini dibuat untuk kolaborasi cepat.",
     excerpt:
-      "Aitonomous Notepad dibangun untuk membantu tim menulis catatan bersama secara realtime tanpa proses setup yang rumit.",
+      "Chandra Notepad dibangun untuk membantu tim menulis catatan bersama secara realtime tanpa proses setup yang rumit.",
     updatedAt: "2026-05-16T00:00:00.000Z",
-    keywords: ["about notepad online", "tentang aitonomous notepad", "realtime notes app"],
+    keywords: ["about notepad online", "tentang chandra notepad", "realtime notes app"],
     sections: [
       {
         heading: "Visi Produk",
         paragraphs: [
-          "Aitonomous Notepad dibuat dengan tujuan sederhana: membuat kolaborasi catatan menjadi secepat membuka link.",
+          "Chandra Notepad dibuat dengan tujuan sederhana: membuat kolaborasi catatan menjadi secepat membuka link.",
           "Kami ingin user bisa memulai diskusi, mencatat keputusan, dan menyusun rencana tim secara realtime tanpa login yang membingungkan."
         ]
       },
@@ -44,7 +44,7 @@ export const BLOG_ENTRIES: BlogEntry[] = [
     slug: "features",
     title: "Fitur Utama Notepad Online Realtime",
     description:
-      "Daftar fitur utama Aitonomous Notepad: kolaborasi realtime, lock PIN, auto save, multi tab halaman, dan room berbasis URL.",
+      "Daftar fitur utama Chandra Notepad: kolaborasi realtime, lock PIN, auto save, multi tab halaman, dan room berbasis URL.",
     excerpt:
       "Temukan fitur kolaborasi modern yang membuat notepad online lebih efektif untuk tim kecil hingga menengah.",
     updatedAt: "2026-05-16T00:00:00.000Z",
@@ -68,11 +68,11 @@ export const BLOG_ENTRIES: BlogEntry[] = [
   },
   {
     slug: "privacy",
-    title: "Privasi dan Keamanan Dasar di Aitonomous Notepad",
+    title: "Privasi dan Keamanan Dasar di Chandra Notepad",
     description:
       "Penjelasan tentang lock PIN, batas percobaan unlock, cooldown keamanan, dan cara menjaga room notepad tetap aman.",
     excerpt:
-      "Aitonomous Notepad menyediakan kontrol privasi dasar agar catatan tim tetap nyaman digunakan untuk kebutuhan internal.",
+      "Chandra Notepad menyediakan kontrol privasi dasar agar catatan tim tetap nyaman digunakan untuk kebutuhan internal.",
     updatedAt: "2026-05-16T00:00:00.000Z",
     keywords: ["privasi notepad online", "keamanan pin notepad", "shared notes privacy"],
     sections: [
@@ -96,7 +96,7 @@ export const BLOG_ENTRIES: BlogEntry[] = [
     slug: "how-it-works",
     title: "Cara Kerja Notepad Online Realtime",
     description:
-      "Panduan singkat cara kerja Aitonomous Notepad dari membuat room, berbagi link, hingga kolaborasi dan penyimpanan otomatis.",
+      "Panduan singkat cara kerja Chandra Notepad dari membuat room, berbagi link, hingga kolaborasi dan penyimpanan otomatis.",
     excerpt:
       "Tidak perlu setup panjang. Tentukan nama room, bagikan URL, lalu semua orang bisa menulis bersama secara realtime.",
     updatedAt: "2026-05-16T00:00:00.000Z",
@@ -146,13 +146,13 @@ export const BLOG_ENTRIES: BlogEntry[] = [
   },
   {
     slug: "open-source",
-    title: "Aitonomous Notepad Open Source dan Komunitas",
+    title: "Chandra Notepad Open Source dan Komunitas",
     description:
-      "Aitonomous Notepad dikembangkan sebagai proyek open source dengan semangat kolaborasi, transparansi, dan kontribusi komunitas.",
+      "Chandra Notepad dikembangkan sebagai proyek open source dengan semangat kolaborasi, transparansi, dan kontribusi komunitas.",
     excerpt:
       "Sebagai proyek open source, pengembangan produk terbuka untuk audit, pembelajaran, dan perbaikan berkelanjutan.",
     updatedAt: "2026-05-16T00:00:00.000Z",
-    keywords: ["open source notepad", "aitonomous notepad github", "collaborative editor open source"],
+    keywords: ["open source notepad", "chandra notepad github", "collaborative editor open source"],
     sections: [
       {
         heading: "Nilai Open Source",

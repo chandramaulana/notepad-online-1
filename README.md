@@ -1,4 +1,4 @@
-# Aitonomous Notepad
+# Chandra Notepad
 
 Realtime collaborative online notepad dengan URL dinamis (model notepad.pw), lock PIN, dan export TXT/MD.
 
@@ -179,6 +179,6 @@ Ketentuan wajib tag sumber:
 
 1. Jika melakukan redistribusi source code, wajib mempertahankan copyright notice dan file lisensi.
 2. Jika mendistribusikan binary/deploy hasil turunan, wajib menyertakan copyright notice + lisensi di dokumentasi/material distribusi.
-3. Direkomendasikan mencantumkan kredit: "Source: Aitonomous Notepad" beserta URL repository sumber.
+3. Direkomendasikan mencantumkan kredit: "Source: Chandra Notepad" beserta URL repository sumber.
 
 

@@ -7,13 +7,13 @@ import { useAppSettings } from "@/components/ui/use-app-settings";
 
 const copy = {
   id: {
-    badge: "Aitonomous Notepad",
+    badge: "Chandra Notepad",
     title: "Catatan Kolaborasi Realtime",
     subtitle:
       "Buka URL unik apa pun dan langsung kolaborasi realtime untuk menulis catatan meeting, rencana proyek, checklist, atau dokumentasi tim.",
     activeUsers: "User Aktif",
     roomsCreated: "Room Dibuat",
-    sectionTitle: "Kenapa Aitonomous Notepad Mudah Dipakai",
+    sectionTitle: "Kenapa Chandra Notepad Mudah Dipakai",
     sectionDescription:
       "Notepad online ini dirancang cepat, ringan, dan siap dipakai dari browser tanpa instalasi tambahan.",
     points: [
@@ -50,13 +50,13 @@ const copy = {
     ]
   },
   en: {
-    badge: "Aitonomous Notepad",
+    badge: "Chandra Notepad",
     title: "Realtime Collaborative Notes",
     subtitle:
       "Open any unique URL and instantly collaborate in realtime for meeting notes, project plans, checklists, and team documentation.",
     activeUsers: "Active Users",
     roomsCreated: "Rooms Created",
-    sectionTitle: "Why Aitonomous Notepad Is Easy To Use",
+    sectionTitle: "Why Chandra Notepad Is Easy To Use",
     sectionDescription:
       "This online notepad is built to be fast, lightweight, and ready from any browser without extra setup.",
     points: [

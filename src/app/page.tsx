@@ -4,9 +4,9 @@ import { HomePageClient } from "@/components/home/home-page-client";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 
 export const metadata: Metadata = {
-  title: "Aitonomous Notepad | Notepad Online Realtime Untuk Kolaborasi Tim",
+  title: "Chandra Notepad | Notepad Online Realtime Untuk Kolaborasi Tim",
   description:
-    "Aitonomous Notepad adalah notepad online realtime untuk catatan meeting, brainstorming, checklist, dan dokumentasi tim. Buat room dari URL unik dan langsung kolaborasi.",
+    "Chandra Notepad adalah notepad online realtime untuk catatan meeting, brainstorming, checklist, dan dokumentasi tim. Buat room dari URL unik dan langsung kolaborasi.",
   keywords: [
     "notepad online",
     "catatan online",
@@ -19,17 +19,17 @@ export const metadata: Metadata = {
     canonical: appUrl
   },
   openGraph: {
-    title: "Aitonomous Notepad | Realtime Collaborative Notes",
+    title: "Chandra Notepad | Realtime Collaborative Notes",
     description:
       "Notepad online realtime untuk meeting notes, project planning, dan kolaborasi tim dari browser.",
     url: appUrl,
-    siteName: "Aitonomous Notepad",
+    siteName: "Chandra Notepad",
     type: "website",
     locale: "id_ID"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aitonomous Notepad | Realtime Collaborative Notes",
+    title: "Chandra Notepad | Realtime Collaborative Notes",
     description:
       "Notepad online realtime untuk meeting notes, project planning, dan kolaborasi tim dari browser."
   }
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "Aitonomous Notepad",
+  name: "Chandra Notepad",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   url: appUrl,

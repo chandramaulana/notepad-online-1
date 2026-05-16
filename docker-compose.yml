@@ -1,16 +1,16 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: aitonomous-notepad-db
+    container_name: chandra-notepad-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-aitonomous_notepad}
+      POSTGRES_DB: ${POSTGRES_DB:-chandra_notepad}
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-aitonomous_notepad}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-chandra_notepad}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,20 +20,20 @@ services:
     build:
       context: .
       args:
-        DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-aitonomous_notepad}?schema=public
+        DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-chandra_notepad}?schema=public
         NOTE_AUTH_SECRET: ${NOTE_AUTH_SECRET:-change-me-in-production}
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:7800}
         NEXT_PUBLIC_COLLAB_WS_URL: ${NEXT_PUBLIC_COLLAB_WS_URL:-ws://localhost:1234}
         NEXT_PUBLIC_SAVE_INTERVAL_MS: ${NEXT_PUBLIC_SAVE_INTERVAL_MS:-3000}
         GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
-    container_name: aitonomous-notepad-app
+    container_name: chandra-notepad-app
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-aitonomous_notepad}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-chandra_notepad}?schema=public
       NOTE_AUTH_SECRET: ${NOTE_AUTH_SECRET:-change-me-in-production}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:7800}
       NEXT_PUBLIC_COLLAB_WS_URL: ${NEXT_PUBLIC_COLLAB_WS_URL:-ws://localhost:1234}

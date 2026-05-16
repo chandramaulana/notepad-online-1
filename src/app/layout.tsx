@@ -16,7 +16,7 @@ const monoFont = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:7800"),
-  title: "Aitonomous Notepad",
+  title: "Chandra Notepad",
   description: "Realtime collaborative online notepad.",
   alternates: {
     canonical: "/"
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
     google: process.env.GOOGLE_SITE_VERIFICATION
   },
   openGraph: {
-    title: "Aitonomous Notepad",
+    title: "Chandra Notepad",
     description: "Realtime collaborative online notepad.",
     type: "website",
     url: "/",
-    siteName: "Aitonomous Notepad"
+    siteName: "Chandra Notepad"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aitonomous Notepad",
+    title: "Chandra Notepad",
     description: "Realtime collaborative online notepad."
   }
 };

@@ -19,14 +19,14 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 
   if (!entry) {
     return {
-      title: "Article Not Found | Aitonomous Notepad"
+      title: "Article Not Found | Chandra Notepad"
     };
   }
 
   const canonicalUrl = `${appUrl}/blog/${entry.slug}`;
 
   return {
-    title: `${entry.title} | Aitonomous Notepad Blog`,
+    title: `${entry.title} | Chandra Notepad Blog`,
     description: entry.description,
     keywords: entry.keywords,
     alternates: {
@@ -66,11 +66,11 @@ export default async function BlogArticlePage({ params }: BlogPageProps) {
     mainEntityOfPage: `${appUrl}/blog/${entry.slug}`,
     author: {
       "@type": "Organization",
-      name: "Aitonomous Notepad"
+      name: "Chandra Notepad"
     },
     publisher: {
       "@type": "Organization",
-      name: "Aitonomous Notepad"
+      name: "Chandra Notepad"
     }
   };
 
@@ -83,7 +83,7 @@ export default async function BlogArticlePage({ params }: BlogPageProps) {
       />
 
       <article className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-xl shadow-black/10 md:p-8">
-        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Aitonomous Notepad Blog</p>
+        <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Chandra Notepad Blog</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{entry.title}</h1>
         <p className="mt-3 text-sm text-[var(--text-soft)] md:text-base">{entry.description}</p>
         <p className="mt-4 text-xs uppercase tracking-wide text-[var(--text-soft)]">
@@ -105,7 +105,7 @@ export default async function BlogArticlePage({ params }: BlogPageProps) {
 
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
-            Baca juga halaman lain di <Link href="/blog" className="font-medium text-[var(--accent)]">blog Aitonomous Notepad</Link>
+            Baca juga halaman lain di <Link href="/blog" className="font-medium text-[var(--accent)]">blog Chandra Notepad</Link>
             .
           </p>
         </footer>

@@ -7,7 +7,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ARG DATABASE_URL=postgresql://postgres:postgres@db:5432/aitonomous_notepad?schema=public
+ARG DATABASE_URL=postgresql://postgres:postgres@db:5432/chandra_notepad?schema=public
 ARG NOTE_AUTH_SECRET=build-only-secret
 ARG NEXT_PUBLIC_APP_URL=http://localhost:7800
 ARG NEXT_PUBLIC_COLLAB_WS_URL=ws://localhost:1234

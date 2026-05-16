@@ -1,89 +1,93 @@
-"use client";
+import type { Metadata } from "next";
+import { HomePageClient } from "@/components/home/home-page-client";
 
-import { useEffect, useState } from "react";
-import { LandingForm } from "@/components/home/landing-form";
-import { useAppSettings } from "@/components/ui/use-app-settings";
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 
-const copy = {
-  id: {
-    badge: "Aitonomous Notepad",
-    title: "Catatan Kolaborasi Realtime",
-    subtitle: "Buka URL unik apa pun dan langsung kolaborasi realtime tanpa setup room manual.",
-    activeUsers: "User Aktif",
-    roomsCreated: "Room Dibuat"
+export const metadata: Metadata = {
+  title: "Chandra Notepad | Notepad Online Realtime Untuk Kolaborasi Tim",
+  description:
+    "Chandra Notepad adalah notepad online realtime untuk catatan meeting, brainstorming, checklist, dan dokumentasi tim. Buat room dari URL unik dan langsung kolaborasi.",
+  keywords: [
+    "notepad online",
+    "catatan online",
+    "realtime collaborative notes",
+    "catatan meeting tim",
+    "shared notes",
+    "online notes"
+  ],
+  alternates: {
+    canonical: appUrl
   },
-  en: {
-    badge: "Aitonomous Notepad",
-    title: "Realtime Collaborative Notes",
-    subtitle: "Open any unique URL and instantly collaborate in realtime with no manual room setup.",
-    activeUsers: "Active Users",
-    roomsCreated: "Rooms Created"
+  openGraph: {
+    title: "Chandra Notepad | Realtime Collaborative Notes",
+    description:
+      "Notepad online realtime untuk meeting notes, project planning, dan kolaborasi tim dari browser.",
+    url: appUrl,
+    siteName: "Chandra Notepad",
+    type: "website",
+    locale: "id_ID"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chandra Notepad | Realtime Collaborative Notes",
+    description:
+      "Notepad online realtime untuk meeting notes, project planning, dan kolaborasi tim dari browser."
   }
 };
 
-type StatsPayload = {
-  activeUsers: number;
-  roomsCreated: number;
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Chandra Notepad",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: appUrl,
+  description:
+    "Realtime online notepad for teams to collaborate on meeting notes, plans, and documentation.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD"
+  }
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Apakah bisa dipakai tanpa login?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Bisa. Buka halaman utama, masukkan nama room, lalu langsung mulai menulis dan berbagi link room."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Apakah cocok untuk tim kerja?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Cocok untuk catatan meeting, brainstorming, checklist tugas, dan dokumentasi kolaboratif realtime."
+      }
+    }
+  ]
 };
 
 export default function HomePage() {
-  const { language } = useAppSettings();
-  const text = copy[language];
-  const [stats, setStats] = useState<StatsPayload>({
-    activeUsers: 0,
-    roomsCreated: 0
-  });
-
-  useEffect(() => {
-    let active = true;
-
-    async function fetchStats() {
-      try {
-        const response = await fetch("/api/stats", { cache: "no-store" });
-        if (!response.ok) {
-          return;
-        }
-        const payload = (await response.json()) as StatsPayload;
-        if (active) {
-          setStats({
-            activeUsers: payload.activeUsers,
-            roomsCreated: payload.roomsCreated
-          });
-        }
-      } catch {
-        // keep previous stats when request fails
-      }
-    }
-
-    fetchStats();
-    const intervalId = setInterval(fetchStats, 3000);
-
-    return () => {
-      active = false;
-      clearInterval(intervalId);
-    };
-  }, []);
-
   return (
-    <section className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-4 py-12">
-      <div className="w-full max-w-xl rounded-3xl border border-[var(--line)] bg-[var(--card)] p-8 shadow-2xl shadow-black/10 backdrop-blur-sm">
-        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">{text.badge}</p>
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight">{text.title}</h1>
-        <p className="mb-7 text-sm text-[var(--text-soft)]">{text.subtitle}</p>
-
-        <div className="mb-7 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/55 p-3">
-            <p className="text-xs uppercase tracking-wider text-[var(--text-soft)]">{text.activeUsers}</p>
-            <p className="mt-1 text-2xl font-semibold">{stats.activeUsers}</p>
-          </div>
-          <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/55 p-3">
-            <p className="text-xs uppercase tracking-wider text-[var(--text-soft)]">{text.roomsCreated}</p>
-            <p className="mt-1 text-2xl font-semibold">{stats.roomsCreated}</p>
-          </div>
-        </div>
-
-        <LandingForm />
-      </div>
-    </section>
+    <>
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <HomePageClient />
+    </>
   );
 }

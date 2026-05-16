@@ -99,6 +99,8 @@ const copy = {
     md: "MD",
     lastSaved: "Terakhir disimpan",
     saving: "Menyimpan...",
+    saveFailed: "Gagal simpan",
+    saveErrorHint: "Perubahan belum tersimpan ke server.",
     neverSaved: "Belum pernah disimpan",
     status: {
       connecting: "menghubungkan",
@@ -144,6 +146,8 @@ const copy = {
     md: "MD",
     lastSaved: "Last saved",
     saving: "Saving...",
+    saveFailed: "Save failed",
+    saveErrorHint: "Changes are not saved to server yet.",
     neverSaved: "Never saved",
     status: {
       connecting: "connecting",
@@ -277,6 +281,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   const [activeTabId, setActiveTabId] = useState(DEFAULT_TAB_ID);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [timeTick, setTimeTick] = useState(0);
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [unlockCooldownSeconds, setUnlockCooldownSeconds] = useState(0);
@@ -287,6 +292,15 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   const [tabDeleteTarget, setTabDeleteTarget] = useState<NoteTab | null>(null);
   const [toast, setToast] = useState<ToastState | null>(null);
   const [ydoc] = useState(() => new Y.Doc());
+
+  const fallbackCollabUrl = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "ws://localhost:1234";
+    }
+
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    return `${protocol}//${window.location.host}`;
+  }, []);
 
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -392,7 +406,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
     }
 
     const nextProvider = new HocuspocusProvider({
-      url: process.env.NEXT_PUBLIC_COLLAB_WS_URL || "ws://localhost:1234",
+      url: process.env.NEXT_PUBLIC_COLLAB_WS_URL || fallbackCollabUrl,
       name: slug,
       document: ydoc,
       token: token || ""
@@ -428,7 +442,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
       nextProvider.destroy();
       setProvider(null);
     };
-  }, [loading, unauthorized, slug, token, ydoc]);
+  }, [fallbackCollabUrl, loading, unauthorized, slug, token, ydoc]);
 
   useEffect(() => {
     if (loading || unauthorized || !provider) {
@@ -533,6 +547,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
       saveTimeoutRef.current = setTimeout(async () => {
         const payload = JSON.stringify(currentEditor.getJSON());
         setSaving(true);
+        setSaveError(null);
 
         try {
           const response = await fetch(`/api/notes/${slug}/save`, {
@@ -546,7 +561,8 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
                 : {})
             },
             body: JSON.stringify({
-              contentJson: payload
+              contentJson: payload,
+              activeTabId
             })
           });
 
@@ -557,7 +573,13 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
             } else {
               setLastSavedAt(new Date().toISOString());
             }
+          } else {
+            const errorPayload = (await response.json().catch(() => ({}))) as { message?: string };
+            const message = errorPayload.message || text.saveErrorHint;
+            setSaveError(message);
           }
+        } catch {
+          setSaveError(text.saveErrorHint);
         } finally {
           setSaving(false);
         }
@@ -647,7 +669,8 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
   }
 
   async function exportNote(format: "txt" | "md") {
-    const response = await fetch(`/api/notes/${slug}/export?format=${format}`, {
+    const params = new URLSearchParams({ format, tab: activeTabId });
+    const response = await fetch(`/api/notes/${slug}/export?${params.toString()}`, {
       headers: token
         ? {
             Authorization: `Bearer ${token}`
@@ -661,7 +684,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
     }
 
     const content = await response.text();
-    saveFile(`${slug}.${format}`, content);
+    saveFile(`${slug}-${activeTabId}.${format}`, content);
     showToast(format === "txt" ? text.exportTxtSuccess : text.exportMdSuccess, "success");
   }
 
@@ -745,7 +768,7 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
             {onlineUsers} {text.online}
             <span className="rounded-full border border-[var(--line)] px-2 py-1">{text.status[status as keyof typeof text.status] || status}</span>
             <span className="rounded-full border border-[var(--line)] px-2 py-1">
-              {text.lastSaved}: {saving ? text.saving : relativeLastSaved}
+              {text.lastSaved}: {saving ? text.saving : saveError ? text.saveFailed : relativeLastSaved}
             </span>
             {presenceUsers.slice(0, 3).map((user) => (
               <span key={`${user.name}-${user.color}`} className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] px-2 py-1">
@@ -872,6 +895,12 @@ export function NotepadEditor({ slug, initiallyLocked }: Props) {
         >
           {toast.type === "success" ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
           {toast.message}
+        </div>
+      ) : null}
+
+      {saveError ? (
+        <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+          {text.saveFailed}: {saveError}
         </div>
       ) : null}
 

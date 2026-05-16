@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "aitonomous-next",
+      name: "chandra-next",
       script: "node_modules/next/dist/bin/next",
       args: "start -p 7800",
       instances: 1,
@@ -11,7 +11,7 @@ module.exports = {
       }
     },
     {
-      name: "aitonomous-collab",
+      name: "chandra-collab",
       script: "node_modules/.bin/tsx",
       args: "collab-server.ts",
       instances: 1,

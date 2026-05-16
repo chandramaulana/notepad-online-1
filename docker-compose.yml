@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-aitonomous_notepad}
-    ports:
-      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -43,8 +41,8 @@ services:
       PORT: ${PORT:-7800}
       COLLAB_PORT: ${COLLAB_PORT:-1234}
     ports:
-      - "${PORT:-7800}:7800"
-      - "${COLLAB_PORT:-1234}:1234"
+      - "127.0.0.1:${PORT:-7800}:7800"
+      - "127.0.0.1:${COLLAB_PORT:-1234}:1234"
 
 volumes:
   pg_data:

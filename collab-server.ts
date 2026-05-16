@@ -7,6 +7,28 @@ import { verifyNoteToken } from "@/lib/auth";
 
 const port = Number(process.env.COLLAB_PORT || 1234);
 
+function isPrismaAuthError(error: unknown): boolean {
+  return Boolean(
+    error &&
+      typeof error === "object" &&
+      "code" in error &&
+      (error as { code?: string }).code === "P1000"
+  );
+}
+
+async function safeSetRoomPresenceCount(slug: string, activeUsers: number) {
+  try {
+    await setRoomPresenceCount(slug, activeUsers);
+  } catch (error) {
+    if (isPrismaAuthError(error)) {
+      console.error("[presence] Database authentication failed while updating room presence.");
+      return;
+    }
+
+    console.error("[presence] Failed to update room presence.", error);
+  }
+}
+
 async function setRoomPresenceCount(slug: string, activeUsers: number) {
   const safeSlug = sanitizeSlug(slug);
   const nextActiveUsers = Math.max(activeUsers, 0);
@@ -34,13 +56,13 @@ const server = new Server({
   port,
   async onConnect({ documentName }) {
     // Keep room row alive; realtime count is synced by awareness/disconnect hooks.
-    await setRoomPresenceCount(documentName, 0);
+    await safeSetRoomPresenceCount(documentName, 0);
   },
   async onAwarenessUpdate({ documentName, states }) {
-    await setRoomPresenceCount(documentName, states.length);
+    await safeSetRoomPresenceCount(documentName, states.length);
   },
   async onDisconnect({ documentName, clientsCount }) {
-    await setRoomPresenceCount(documentName, clientsCount);
+    await safeSetRoomPresenceCount(documentName, clientsCount);
   },
   async onAuthenticate({ documentName, token }) {
     const slug = sanitizeSlug(documentName);

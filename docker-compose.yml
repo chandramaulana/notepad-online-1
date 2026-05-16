@@ -4,36 +4,43 @@ services:
     container_name: aitonomous-notepad-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: aitonomous_notepad
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-aitonomous_notepad}
     ports:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-aitonomous_notepad}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   app:
     build:
       context: .
       args:
-        DATABASE_URL: postgresql://postgres:postgres@db:5432/aitonomous_notepad?schema=public
-        NOTE_AUTH_SECRET: change-me-in-production
+        DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-aitonomous_notepad}?schema=public
+        NOTE_AUTH_SECRET: ${NOTE_AUTH_SECRET:-change-me-in-production}
     container_name: aitonomous-notepad-app
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/aitonomous_notepad?schema=public
-      NOTE_AUTH_SECRET: change-me-in-production
-      NEXT_PUBLIC_APP_URL: http://localhost:7800
-      NEXT_PUBLIC_COLLAB_WS_URL: ws://localhost:1234
-      NEXT_PUBLIC_SAVE_INTERVAL_MS: 3000
-      PORT: 7800
-      COLLAB_PORT: 1234
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-aitonomous_notepad}?schema=public
+      NOTE_AUTH_SECRET: ${NOTE_AUTH_SECRET:-change-me-in-production}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:7800}
+      NEXT_PUBLIC_COLLAB_WS_URL: ${NEXT_PUBLIC_COLLAB_WS_URL:-ws://localhost:1234}
+      NEXT_PUBLIC_SAVE_INTERVAL_MS: ${NEXT_PUBLIC_SAVE_INTERVAL_MS:-3000}
+      PORT: ${PORT:-7800}
+      COLLAB_PORT: ${COLLAB_PORT:-1234}
     ports:
-      - "7800:7800"
-      - "1234:1234"
+      - "${PORT:-7800}:7800"
+      - "${COLLAB_PORT:-1234}:1234"
 
 volumes:
   pg_data:

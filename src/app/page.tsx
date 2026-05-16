@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HomePageClient } from "@/components/home/home-page-client";
+import { SEO_KEYWORDS_COMBINED } from "@/lib/seo-keywords";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 
@@ -7,14 +8,7 @@ export const metadata: Metadata = {
   title: "Chandra Notepad | Notepad Online Realtime Untuk Kolaborasi Tim",
   description:
     "Chandra Notepad adalah notepad online realtime untuk catatan meeting, brainstorming, checklist, dan dokumentasi tim. Buat room dari URL unik dan langsung kolaborasi.",
-  keywords: [
-    "notepad online",
-    "catatan online",
-    "realtime collaborative notes",
-    "catatan meeting tim",
-    "shared notes",
-    "online notes"
-  ],
+  keywords: SEO_KEYWORDS_COMBINED,
   alternates: {
     canonical: appUrl
   },

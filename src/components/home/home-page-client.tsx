@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LandingForm } from "@/components/home/landing-form";
 import { useAppSettings } from "@/components/ui/use-app-settings";
+import { SEO_KEYWORDS_EN, SEO_KEYWORDS_ID } from "@/lib/seo-keywords";
 
 const copy = {
   id: {
@@ -23,6 +24,10 @@ const copy = {
       "Privasi dasar dengan lock PIN agar room penting tidak mudah diakses."
     ],
     faqTitle: "Pertanyaan Umum",
+    seoTagsTitle: "Tag SEO",
+    seoTagsDescription:
+      "Kumpulan tag pencarian untuk membantu cakupan keyword Google dan AI search tanpa mengganggu fokus tampilan utama.",
+    seoTagsToggle: "Lihat tag SEO",
     blogTitle: "Artikel Populer",
     blogLinks: [
       {
@@ -66,6 +71,10 @@ const copy = {
       "Basic privacy lock with PIN for sensitive collaboration rooms."
     ],
     faqTitle: "Frequently Asked Questions",
+    seoTagsTitle: "SEO Tags",
+    seoTagsDescription:
+      "A keyword cluster section to support Google and AI-search discoverability while keeping the interface clean.",
+    seoTagsToggle: "View SEO tags",
     blogTitle: "Popular Articles",
     blogLinks: [
       {
@@ -111,6 +120,9 @@ type HomeCopy = {
   sectionDescription: string;
   points: string[];
   faqTitle: string;
+  seoTagsTitle: string;
+  seoTagsDescription: string;
+  seoTagsToggle: string;
   blogTitle: string;
   blogLinks: Array<{ href: BlogHref; label: string }>;
   faq: Array<{ q: string; a: string }>;
@@ -121,6 +133,7 @@ const typedCopy: Record<"id" | "en", HomeCopy> = copy;
 export function HomePageClient() {
   const { language } = useAppSettings();
   const text = typedCopy[language];
+  const seoKeywords = language === "id" ? SEO_KEYWORDS_ID : SEO_KEYWORDS_EN;
   const [stats, setStats] = useState<StatsPayload>({
     activeUsers: 0,
     roomsCreated: 0
@@ -157,8 +170,8 @@ export function HomePageClient() {
   }, []);
 
   return (
-    <section className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-4 py-12">
-      <div className="w-full max-w-3xl rounded-3xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-2xl shadow-black/10 backdrop-blur-sm md:p-8">
+    <section className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-12">
+      <div className="w-full max-w-5xl rounded-3xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-2xl shadow-black/10 backdrop-blur-sm md:p-8 lg:p-10">
         <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">{text.badge}</p>
         <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-4xl">{text.title}</h1>
         <p className="mb-7 text-sm text-[var(--text-soft)] md:text-base">{text.subtitle}</p>
@@ -202,6 +215,25 @@ export function HomePageClient() {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="mt-8 border-t border-[var(--line)] pt-6">
+          <h2 className="text-xl font-semibold">{text.seoTagsTitle}</h2>
+          <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">{text.seoTagsDescription}</p>
+
+          <details className="mt-3 rounded-xl border border-[var(--line)] bg-[var(--bg-soft)]/35 p-3">
+            <summary className="cursor-pointer text-sm font-medium text-[var(--text-soft)]">{text.seoTagsToggle}</summary>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {seoKeywords.map((keyword) => (
+                <span
+                  key={keyword}
+                  className="rounded-full border border-[var(--line)] bg-[var(--card)] px-2.5 py-1 text-xs text-[var(--text-soft)]"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </details>
         </div>
 
         <div className="mt-8 border-t border-[var(--line)] pt-6">

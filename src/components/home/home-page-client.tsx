@@ -71,6 +71,7 @@ export function HomePageClient() {
         if (!response.ok) {
           return;
         }
+
         const payload = (await response.json()) as StatsPayload;
         if (active) {
           setStats({
@@ -79,7 +80,7 @@ export function HomePageClient() {
           });
         }
       } catch {
-        // Keep existing values when request fails.
+        // Keep previous values on network failures.
       }
     }
 
@@ -93,96 +94,74 @@ export function HomePageClient() {
   }, []);
 
   return (
-    <section className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl rounded-3xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-2xl shadow-black/10 backdrop-blur-sm md:p-8 lg:p-10">
-        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[var(--text-soft)]">{text.badge}</p>
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-4xl">{text.title}</h1>
-        <p className="mb-7 text-sm text-[var(--text-soft)] md:text-base">{text.subtitle}</p>
-
-        <div className="mb-7 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/55 p-3">
-            <p className="text-xs uppercase tracking-wider text-[var(--text-soft)]">{text.activeUsers}</p>
-            <p className="mt-1 text-2xl font-semibold">{stats.activeUsers}</p>
+    <section className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 md:py-8">
+      <div className="flex min-h-[calc(100vh-3rem)] flex-col md:min-h-[calc(100vh-4rem)]">
+        <header className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)]/90 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur-sm">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-soft)]">{text.badge}</p>
+            <p className="mt-1 text-xs text-[var(--text-soft)] md:text-sm">{text.topHint}</p>
           </div>
-          <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/55 p-3">
-            <p className="text-xs uppercase tracking-wider text-[var(--text-soft)]">{text.roomsCreated}</p>
-            <p className="mt-1 text-2xl font-semibold">{stats.roomsCreated}</p>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/65 px-3 py-1 text-xs text-[var(--text-soft)] md:text-sm">
+              {text.activeUsers}: <strong className="text-[var(--text)]">{stats.activeUsers}</strong>
+            </span>
+            <span className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/65 px-3 py-1 text-xs text-[var(--text-soft)] md:text-sm">
+              {text.roomsCreated}: <strong className="text-[var(--text)]">{stats.roomsCreated}</strong>
+            </span>
           </div>
-        </div>
+        </header>
 
-        <LandingForm />
+        <main className="flex flex-1 items-center justify-center py-6">
+          <div className="w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[var(--card)] px-5 py-8 text-center shadow-2xl shadow-black/10 md:px-8 md:py-10">
+            <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">{text.title}</h1>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-[var(--text-soft)] md:text-base">{text.subtitle}</p>
 
-        <div className="mt-8 border-t border-[var(--line)] pt-6">
-          <h2 className="text-xl font-semibold">{text.sectionTitle}</h2>
-          <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">{text.sectionDescription}</p>
-          <ul className="mt-4 space-y-2 text-sm md:text-base">
-            {text.points.map((point) => (
-              <section className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 md:py-8">
-                <div className="flex min-h-[calc(100vh-3rem)] flex-col md:min-h-[calc(100vh-4rem)]">
-                  <header className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)]/90 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur-sm">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.22em] text-[var(--text-soft)]">{text.badge}</p>
-                      <p className="mt-1 text-xs text-[var(--text-soft)] md:text-sm">{text.topHint}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/65 px-3 py-1 text-xs text-[var(--text-soft)] md:text-sm">
-                        {text.activeUsers}: <strong className="text-[var(--text)]">{stats.activeUsers}</strong>
-                      </span>
-                      <span className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/65 px-3 py-1 text-xs text-[var(--text-soft)] md:text-sm">
-                        {text.roomsCreated}: <strong className="text-[var(--text)]">{stats.roomsCreated}</strong>
-                      </span>
-                    </div>
-                  </header>
+            <div className="mx-auto mt-7 max-w-xl rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/45 p-4 text-left md:p-5">
+              <LandingForm />
+            </div>
+          </div>
+        </main>
 
-                  <main className="flex flex-1 items-center justify-center py-6">
-                    <div className="w-full max-w-2xl rounded-3xl border border-[var(--line)] bg-[var(--card)] px-5 py-8 text-center shadow-2xl shadow-black/10 md:px-8 md:py-10">
-                      <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">{text.title}</h1>
-                      <p className="mx-auto mt-3 max-w-xl text-sm text-[var(--text-soft)] md:text-base">{text.subtitle}</p>
+        <footer className="rounded-2xl border border-[var(--line)] bg-[var(--card)]/90 p-4 shadow-lg shadow-black/5 backdrop-blur-sm">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm text-[var(--text-soft)]">{text.bottomTagline}</p>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/blog"
+                className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
+              >
+                {text.blogLabel}
+              </Link>
+              <Link
+                href="/learn"
+                className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
+              >
+                {text.guideLabel}
+              </Link>
+              <Link
+                href="/compare"
+                className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
+              >
+                {text.compareLabel}
+              </Link>
+            </div>
+          </div>
 
-                      <div className="mx-auto mt-7 max-w-xl rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)]/45 p-4 text-left md:p-5">
-                        <LandingForm />
-                      </div>
-                    </div>
-                  </main>
-
-                  <footer className="rounded-2xl border border-[var(--line)] bg-[var(--card)]/90 p-4 shadow-lg shadow-black/5 backdrop-blur-sm">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <p className="text-sm text-[var(--text-soft)]">{text.bottomTagline}</p>
-                      <div className="flex flex-wrap gap-2">
-                        <Link
-                          href="/blog"
-                          className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
-                        >
-                          {text.blogLabel}
-                        </Link>
-                        <Link
-                          href="/learn"
-                          className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
-                        >
-                          {text.guideLabel}
-                        </Link>
-                        <Link
-                          href="/compare"
-                          className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)]/45 px-3 py-1 text-xs text-[var(--text-soft)] transition-colors hover:text-[var(--accent)] md:text-sm"
-                        >
-                          {text.compareLabel}
-                        </Link>
-                      </div>
+          <details className="mt-3 rounded-xl border border-[var(--line)] bg-[var(--bg-soft)]/35 p-3">
+            <summary className="cursor-pointer text-sm font-medium text-[var(--text-soft)]">SEO keywords</summary>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {seoKeywords.map((keyword) => (
+                <span
+                  key={keyword}
+                  className="rounded-full border border-[var(--line)] bg-[var(--card)] px-2.5 py-1 text-xs text-[var(--text-soft)]"
                 >
-
-                    <details className="mt-3 rounded-xl border border-[var(--line)] bg-[var(--bg-soft)]/35 p-3">
-                      <summary className="cursor-pointer text-sm font-medium text-[var(--text-soft)]">SEO keywords</summary>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {seoKeywords.map((keyword) => (
-                          <span
-                            key={keyword}
-                            className="rounded-full border border-[var(--line)] bg-[var(--card)] px-2.5 py-1 text-xs text-[var(--text-soft)]"
-                          >
-                            {keyword}
-                          </span>
-                        ))}
-                      </div>
-                    </details>
-                  </footer>
-                </div>
-        </div>
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </details>
+        </footer>
+      </div>
+    </section>
+  );
+}

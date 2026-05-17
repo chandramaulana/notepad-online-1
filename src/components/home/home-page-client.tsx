@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LandingForm } from "@/components/home/landing-form";
 import { useAppSettings } from "@/components/ui/use-app-settings";
-import { SEO_KEYWORDS_EN, SEO_KEYWORDS_ID } from "@/lib/seo-keywords";
+import { SEO_KEYWORDS_EN } from "@/lib/seo-keywords";
 
 const copy = {
   id: {
@@ -56,7 +56,7 @@ const typedCopy: Record<"id" | "en", HomeCopy> = copy;
 export function HomePageClient() {
   const { language } = useAppSettings();
   const text = typedCopy[language];
-  const seoKeywords = (language === "id" ? SEO_KEYWORDS_ID : SEO_KEYWORDS_EN).slice(0, 12);
+  const seoKeywords = SEO_KEYWORDS_EN;
   const [stats, setStats] = useState<StatsPayload>({
     activeUsers: 0,
     roomsCreated: 0

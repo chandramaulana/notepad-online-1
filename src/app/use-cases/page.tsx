@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSeoEntries } from "@/lib/programmatic-seo";
+import { ContentPageToolbar } from "@/components/content/content-page-toolbar";
+import { BlogSeoTags } from "@/components/blog/blog-seo-tags";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 const entries = getSeoEntries("use-cases");
@@ -21,10 +23,18 @@ export const metadata: Metadata = {
   }
 };
 
-export default function UseCasesHubPage() {
+type UseCasesHubProps = {
+  searchParams: Promise<{ lang?: string }>;
+};
+
+export default async function UseCasesHubPage({ searchParams }: UseCasesHubProps) {
+  const { lang } = await searchParams;
+  const language = lang === "en" ? "en" : "id";
+
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-12">
       <header className="mb-8">
+        <ContentPageToolbar currentPath="/use-cases" language={language} />
         <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Use Cases Hub</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Use Cases Realtime Collaborative Notepad</h1>
         <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
@@ -39,7 +49,7 @@ export default function UseCasesHubPage() {
             className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-lg shadow-black/5"
           >
             <h2 className="text-xl font-semibold">
-              <Link href={`/use-cases/${entry.slug}`} className="hover:text-[var(--accent)]">
+              <Link href={`/use-cases/${entry.slug}?lang=${language}`} className="hover:text-[var(--accent)]">
                 {entry.title}
               </Link>
             </h2>
@@ -47,6 +57,8 @@ export default function UseCasesHubPage() {
           </article>
         ))}
       </div>
+
+      <BlogSeoTags language={language} />
     </section>
   );
 }

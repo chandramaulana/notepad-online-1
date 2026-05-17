@@ -1,11 +1,11 @@
-import { SEO_KEYWORDS_EN, SEO_KEYWORDS_ID } from "@/lib/seo-keywords";
+import { SEO_KEYWORDS_EN } from "@/lib/seo-keywords";
 
 type Props = {
   language: "id" | "en";
 };
 
 export function BlogSeoTags({ language }: Props) {
-  const keywords = language === "id" ? SEO_KEYWORDS_ID : SEO_KEYWORDS_EN;
+  const keywords = SEO_KEYWORDS_EN;
 
   return (
     <section className="mt-8 border-t border-[var(--line)] pt-6">

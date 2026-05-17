@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSeoEntries, getSeoEntry } from "@/lib/programmatic-seo";
+import { ContentPageToolbar } from "@/components/content/content-page-toolbar";
+import { BlogSeoTags } from "@/components/blog/blog-seo-tags";
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ lang?: string }>;
 };
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
@@ -13,8 +16,10 @@ export async function generateStaticParams() {
   return getSeoEntries("templates").map((entry) => ({ slug: entry.slug }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const { lang } = await searchParams;
+  const language = lang === "en" ? "en" : "id";
   const entry = getSeoEntry("templates", slug);
 
   if (!entry) {
@@ -28,21 +33,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: entry.description,
     keywords: entry.keywords,
     alternates: {
-      canonical: `${appUrl}/templates/${entry.slug}`
+      canonical: `${appUrl}/templates/${entry.slug}?lang=${language}`,
+      languages: {
+        id: `${appUrl}/templates/${entry.slug}?lang=id`,
+        en: `${appUrl}/templates/${entry.slug}?lang=en`
+      }
     },
     openGraph: {
       title: entry.title,
       description: entry.description,
       type: "article",
-      url: `${appUrl}/templates/${entry.slug}`,
+      url: `${appUrl}/templates/${entry.slug}?lang=${language}`,
       modifiedTime: entry.updatedAt,
       publishedTime: entry.updatedAt
     }
   };
 }
 
-export default async function TemplateArticlePage({ params }: Props) {
+export default async function TemplateArticlePage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { lang } = await searchParams;
+  const language = lang === "en" ? "en" : "id";
   const entry = getSeoEntry("templates", slug);
 
   if (!entry) {
@@ -71,6 +82,7 @@ export default async function TemplateArticlePage({ params }: Props) {
       />
 
       <article className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-xl shadow-black/10 md:p-8">
+        <ContentPageToolbar currentPath={`/templates/${entry.slug}`} language={language} />
         <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Templates</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{entry.title}</h1>
         <p className="mt-3 text-sm text-[var(--text-soft)] md:text-base">{entry.description}</p>
@@ -100,9 +112,11 @@ export default async function TemplateArticlePage({ params }: Props) {
           </div>
         </section>
 
+        <BlogSeoTags language={language} />
+
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
-            Jelajahi template lainnya di <Link href="/templates" className="font-medium text-[var(--accent)]">hub templates</Link>
+            Jelajahi template lainnya di <Link href={`/templates?lang=${language}`} className="font-medium text-[var(--accent)]">hub templates</Link>
             .
           </p>
         </footer>

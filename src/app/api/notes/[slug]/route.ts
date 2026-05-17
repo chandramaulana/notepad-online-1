@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getOrCreateNote } from "@/lib/notes";
+import { getNoteBySlug } from "@/lib/notes";
 import { sanitizeSlug } from "@/lib/slug";
 import { verifyNoteToken } from "@/lib/auth";
 import { getBearerToken, getClientIp } from "@/lib/request";
@@ -14,7 +14,12 @@ export async function GET(
 
     const { slug } = await context.params;
     const safeSlug = sanitizeSlug(slug);
-    const note = await getOrCreateNote(safeSlug);
+    const note = await getNoteBySlug(safeSlug);
+
+    if (!note) {
+      return NextResponse.json({ message: "Note not found" }, { status: 404 });
+    }
+
     const token = getBearerToken(request);
     const canReadLockedContent = !note.locked || verifyNoteToken(token, note.slug);
 

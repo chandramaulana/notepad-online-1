@@ -94,6 +94,7 @@ export default async function BlogArticlePage({ params, searchParams }: BlogPage
   };
 
   const getStartedLabel = isEnglish ? "Get Started" : "Mulai Sekarang";
+  const updatedLabel = isEnglish ? "Updated" : "Diperbarui";
 
   return (
     <section className="mx-auto w-full max-w-4xl px-4 py-12">
@@ -133,7 +134,7 @@ export default async function BlogArticlePage({ params, searchParams }: BlogPage
         <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{localized.title}</h1>
         <p className="mt-3 text-sm text-[var(--text-soft)] md:text-base">{localized.description}</p>
         <p className="mt-4 text-xs uppercase tracking-wide text-[var(--text-soft)]">
-          Updated {new Date(entry.updatedAt).toLocaleDateString("id-ID")}
+          {updatedLabel} {new Date(entry.updatedAt).toLocaleDateString(language === "en" ? "en-US" : "id-ID")}
         </p>
 
         <div className="mt-8 space-y-7">

@@ -34,17 +34,26 @@ type LearnHubProps = {
 export default async function LearnHubPage({ searchParams }: LearnHubProps) {
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const ui =
+    language === "en"
+      ? {
+          heading: "Online Notepad Guides",
+          subtitle:
+            "Explore educational articles about online notepad workflows, realtime collaboration, shared-note security, and SaaS content strategy."
+        }
+      : {
+          heading: "Panduan Notepad Online",
+          subtitle:
+            "Jelajahi artikel edukasi seputar online notepad, realtime collaboration, keamanan catatan bersama, dan strategi konten SaaS."
+        };
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-12">
       <header className="mb-8">
         <ContentPageToolbar currentPath="/learn" language={language} />
         <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">SEO Learn Hub</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Panduan Notepad Online</h1>
-        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
-          Jelajahi artikel edukasi seputar online notepad, realtime collaboration, keamanan catatan bersama, dan strategi
-          konten SaaS.
-        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{ui.heading}</h1>
+        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">{ui.subtitle}</p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2">

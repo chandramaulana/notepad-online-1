@@ -30,16 +30,24 @@ type CompareHubProps = {
 export default async function CompareHubPage({ searchParams }: CompareHubProps) {
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const ui =
+    language === "en"
+      ? {
+          heading: "Online Notepad Comparison Pages",
+          subtitle: "Understand the differences between tools so you can choose the most efficient online note workflow."
+        }
+      : {
+          heading: "Online Notepad Comparison Pages",
+          subtitle: "Pahami perbedaan tiap tool agar Anda bisa memilih workflow catatan online yang paling efisien."
+        };
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-12">
       <header className="mb-8">
         <ContentPageToolbar currentPath="/compare" language={language} />
         <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Comparison Hub</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Online Notepad Comparison Pages</h1>
-        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
-          Pahami perbedaan tiap tool agar Anda bisa memilih workflow catatan online yang paling efisien.
-        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{ui.heading}</h1>
+        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">{ui.subtitle}</p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2">

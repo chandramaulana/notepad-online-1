@@ -54,6 +54,7 @@ export default async function UseCaseArticlePage({ params, searchParams }: Props
   const { slug } = await params;
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const isEnglish = language === "en";
   const entry = getSeoEntry("use-cases", slug);
 
   if (!entry) {
@@ -116,7 +117,10 @@ export default async function UseCaseArticlePage({ params, searchParams }: Props
 
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
-            Lihat use case lain di <Link href={`/use-cases?lang=${language}`} className="font-medium text-[var(--accent)]">hub use cases</Link>
+            {isEnglish ? "See more use cases in the " : "Lihat use case lain di "}
+            <Link href={`/use-cases?lang=${language}`} className="font-medium text-[var(--accent)]">
+              {isEnglish ? "use-cases hub" : "hub use cases"}
+            </Link>
             .
           </p>
         </footer>

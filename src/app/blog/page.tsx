@@ -48,6 +48,7 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexProps) {
     ? "A collection of articles about realtime online notepad workflows, collaboration features, and practical security tips."
     : "Kumpulan artikel untuk memahami notepad online realtime, cara kerja kolaborasi, fitur, dan praktik penggunaan yang aman.";
   const getStartedLabel = isEnglish ? "Get Started" : "Mulai Sekarang";
+  const updatedLabel = isEnglish ? "Updated" : "Diperbarui";
   const switchToEnglish = "/blog?lang=en";
   const switchToIndonesian = "/blog?lang=id";
 
@@ -104,7 +105,7 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexProps) {
               );
             })()}
             <p className="mt-4 text-xs uppercase tracking-wide text-[var(--text-soft)]">
-              Updated {new Date(entry.updatedAt).toLocaleDateString("id-ID")}
+              {updatedLabel} {new Date(entry.updatedAt).toLocaleDateString(language === "en" ? "en-US" : "id-ID")}
             </p>
           </article>
         ))}

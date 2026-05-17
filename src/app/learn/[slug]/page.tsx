@@ -54,6 +54,7 @@ export default async function LearnArticlePage({ params, searchParams }: Props) 
   const { slug } = await params;
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const isEnglish = language === "en";
   const entry = getSeoEntry("learn", slug);
 
   if (!entry) {
@@ -121,7 +122,7 @@ export default async function LearnArticlePage({ params, searchParams }: Props) 
         </div>
 
         <section className="mt-10 border-t border-[var(--line)] pt-5">
-          <h2 className="text-xl font-semibold">FAQ</h2>
+          <h2 className="text-xl font-semibold">{isEnglish ? "FAQ" : "FAQ"}</h2>
           <div className="mt-4 space-y-4">
             {entry.faqs.map((faq) => (
               <article key={faq.question} className="rounded-xl border border-[var(--line)] bg-black/10 p-4">
@@ -136,7 +137,10 @@ export default async function LearnArticlePage({ params, searchParams }: Props) 
 
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
-            Jelajahi artikel lainnya di <Link href={`/learn?lang=${language}`} className="font-medium text-[var(--accent)]">hub panduan</Link>
+            {isEnglish ? "Explore more articles in the " : "Jelajahi artikel lainnya di "}
+            <Link href={`/learn?lang=${language}`} className="font-medium text-[var(--accent)]">
+              {isEnglish ? "guide hub" : "hub panduan"}
+            </Link>
             .
           </p>
         </footer>

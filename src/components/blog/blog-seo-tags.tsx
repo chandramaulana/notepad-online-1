@@ -5,7 +5,7 @@ type Props = {
 };
 
 export function BlogSeoTags({ language }: Props) {
-  const keywords = SEO_KEYWORDS_EN;
+  const keywords = language === "en" ? SEO_KEYWORDS_EN : SEO_KEYWORDS_EN;
 
   return (
     <section className="mt-8 border-t border-[var(--line)] pt-6">

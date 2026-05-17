@@ -54,6 +54,7 @@ export default async function TemplateArticlePage({ params, searchParams }: Prop
   const { slug } = await params;
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const isEnglish = language === "en";
   const entry = getSeoEntry("templates", slug);
 
   if (!entry) {
@@ -116,7 +117,10 @@ export default async function TemplateArticlePage({ params, searchParams }: Prop
 
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
-            Jelajahi template lainnya di <Link href={`/templates?lang=${language}`} className="font-medium text-[var(--accent)]">hub templates</Link>
+            {isEnglish ? "Explore more templates in the " : "Jelajahi template lainnya di "}
+            <Link href={`/templates?lang=${language}`} className="font-medium text-[var(--accent)]">
+              {isEnglish ? "templates hub" : "hub templates"}
+            </Link>
             .
           </p>
         </footer>

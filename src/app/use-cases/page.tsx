@@ -30,16 +30,26 @@ type UseCasesHubProps = {
 export default async function UseCasesHubPage({ searchParams }: UseCasesHubProps) {
   const { lang } = await searchParams;
   const language = lang === "en" ? "en" : "id";
+  const ui =
+    language === "en"
+      ? {
+          heading: "Realtime Collaborative Notepad Use Cases",
+          subtitle:
+            "Discover practical online notepad scenarios for product teams, education, operations, and marketing workflows."
+        }
+      : {
+          heading: "Use Cases Realtime Collaborative Notepad",
+          subtitle:
+            "Pelajari skenario penggunaan notepad online untuk tim produk, pendidikan, operasional, hingga marketing."
+        };
 
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-12">
       <header className="mb-8">
         <ContentPageToolbar currentPath="/use-cases" language={language} />
         <p className="text-xs uppercase tracking-[0.18em] text-[var(--text-soft)]">Use Cases Hub</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">Use Cases Realtime Collaborative Notepad</h1>
-        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">
-          Pelajari skenario penggunaan notepad online untuk tim produk, pendidikan, operasional, hingga marketing.
-        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">{ui.heading}</h1>
+        <p className="mt-2 text-sm text-[var(--text-soft)] md:text-base">{ui.subtitle}</p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2">

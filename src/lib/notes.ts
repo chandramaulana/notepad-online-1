@@ -2,6 +2,14 @@ import type { Note } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sanitizeSlug } from "@/lib/slug";
 
+export async function getNoteBySlug(rawSlug: string): Promise<Note | null> {
+  const slug = sanitizeSlug(rawSlug);
+
+  return prisma.note.findUnique({
+    where: { slug }
+  });
+}
+
 export async function getOrCreateNote(rawSlug: string): Promise<Note> {
   const slug = sanitizeSlug(rawSlug);
 

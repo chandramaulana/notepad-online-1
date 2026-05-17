@@ -1,0 +1,51 @@
+name: Auto Deploy VPS
+
+on:
+  push:
+    branches:
+      - google
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+
+          script: |
+            set -e
+
+            cd /opt/notepad-online-1
+
+            echo "== Pull latest code =="
+
+            git fetch origin
+            git checkout google
+            git pull origin google
+
+            echo "== Build Docker =="
+
+            docker compose build app
+
+            echo "== Restart App =="
+
+            docker compose up -d app
+
+            echo "== Cleanup Docker =="
+
+            docker image prune -f
+
+            echo "== Running Containers =="
+
+            docker compose ps
+
+            echo "== Last Logs =="
+
+            docker compose logs --tail=20 app

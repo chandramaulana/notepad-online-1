@@ -15,6 +15,11 @@ build/
 .env
 .env.*
 !.env.example
+# SSH Keys
+github_action_deploy
+github_action_deploy.pub
+telkomiot123
+telkomiot123.pub
 
 # Logs
 *.log

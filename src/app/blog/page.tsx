@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BLOG_ENTRIES, getLocalizedBlogContent, resolveBlogLanguage } from "@/app/blog/content";
+import { BlogSeoTags } from "@/components/blog/blog-seo-tags";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://notepad.iote.my.id";
 
@@ -108,6 +109,8 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexProps) {
           </article>
         ))}
       </div>
+
+      <BlogSeoTags language={language} />
     </section>
   );
 }

@@ -7,6 +7,7 @@ import {
   getLocalizedBlogContent,
   resolveBlogLanguage
 } from "@/app/blog/content";
+import { BlogSeoTags } from "@/components/blog/blog-seo-tags";
 
 type BlogPageProps = {
   params: Promise<{ slug: string }>;
@@ -147,6 +148,8 @@ export default async function BlogArticlePage({ params, searchParams }: BlogPage
             </section>
           ))}
         </div>
+
+        <BlogSeoTags language={language} />
 
         <footer className="mt-10 border-t border-[var(--line)] pt-5">
           <p className="text-sm text-[var(--text-soft)]">
